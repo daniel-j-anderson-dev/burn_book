@@ -1,3 +1,5 @@
+pub mod training;
+
 use burn::{
     nn::{
         Dropout, DropoutConfig, Linear, LinearConfig, Relu,
