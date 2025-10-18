@@ -3202,7 +3202,7 @@ dependencies = [
 [[package]]
 name = "mnist_dataset"
 version = "0.1.0"
-source = "git+https://github.com/daniel-j-anderson-dev/mnist_dataset.git#a514ccf3438bcd41f1918cb2f10941ae03c5e1ad"
+source = "git+https://github.com/daniel-j-anderson-dev/mnist_dataset.git#44ee6e47c3ebe0309e6a28d907c1b64f37f8767b"
 dependencies = [
  "burn",
 ]

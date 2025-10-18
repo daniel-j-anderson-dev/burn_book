@@ -12,7 +12,7 @@ type Device = <Backend as burn::prelude::Backend>::Device;
 
 fn main() -> Result<(), Error> {
     let device = WgpuDevice::default();
-    let artifact_path = "/artifacts/guide";
+    let artifact_path = "./artifacts/guide";
     burn_book::image_classifier::training::train::<Autodiff<Backend>>(
         artifact_path,
         TrainingConfig::new(
