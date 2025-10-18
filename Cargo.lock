@@ -686,6 +686,7 @@ dependencies = [
 name = "burn_book"
 version = "0.1.0"
 dependencies = [
+ "anyhow",
  "burn",
  "mnist_dataset",
 ]
@@ -3201,7 +3202,7 @@ dependencies = [
 [[package]]
 name = "mnist_dataset"
 version = "0.1.0"
-source = "git+https://github.com/daniel-j-anderson-dev/mnist_dataset.git#1b6f7f6570a1bcc5e822e9a15977a13ae6624338"
+source = "git+https://github.com/daniel-j-anderson-dev/mnist_dataset.git#a514ccf3438bcd41f1918cb2f10941ae03c5e1ad"
 dependencies = [
  "burn",
 ]
@@ -4717,9 +4718,9 @@ checksum = "13c2bddecc57b384dee18652358fb23172facb8a2c51ccc10d74c157bdea3292"
 
 [[package]]
 name = "syn"
-version = "2.0.106"
+version = "2.0.107"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ede7c438028d4436d71104916910f5bb611972c5cfd7f89b8300a8186e6fada6"
+checksum = "2a26dbd934e5451d21ef060c018dae56fc073894c5a7896f882928a76e6d081b"
 dependencies = [
  "proc-macro2",
  "quote",
