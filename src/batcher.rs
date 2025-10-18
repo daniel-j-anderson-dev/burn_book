@@ -16,9 +16,10 @@ pub struct MnistBatch<B: Backend> {
     pub labels: Tensor<B, 1, Int>,
 }
 
+#[derive(Debug, Default)]
 pub struct MnistBatcher;
 impl<B: Backend> Batcher<B, MnistItem, MnistBatch<B>> for MnistBatcher {
-    fn batch(&self, items: Vec<MnistItem>, device: &<B as Backend>::Device) -> MnistBatch<B> {
+    fn batch(&self, items: Vec<MnistItem>, device: &B::Device) -> MnistBatch<B> {
         let images = items
             .iter()
             .map(|item| TensorData::from(item.image).convert::<B::FloatElem>())

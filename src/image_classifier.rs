@@ -1,4 +1,5 @@
 pub mod training;
+pub mod inference;
 
 use burn::{
     nn::{

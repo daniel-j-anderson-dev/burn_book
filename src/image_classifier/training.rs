@@ -1,6 +1,6 @@
 use crate::{batcher::*, image_classifier::*};
-use anyhow::Error;
 
+use core::error::Error;
 use std::{fs, io, path::Path};
 
 use burn::{
@@ -74,7 +74,7 @@ pub fn train<B: AutodiffBackend>(
     artifact_path: impl AsRef<Path>,
     training_configuration: TrainingConfig,
     device: B::Device,
-) -> Result<(), Error> {
+) -> Result<(), Box<dyn Error>> {
     let artifact_path = artifact_path.as_ref();
     create_or_clear_directory(artifact_path)?;
     training_configuration.save(artifact_path.join("training_configuration.json"))?;
@@ -110,7 +110,7 @@ pub fn train<B: AutodiffBackend>(
 
     let trained_model = learner.fit(dataloader_train, dataloader_test);
 
-    trained_model.save_file(artifact_path.join("/model"), &CompactRecorder::new())?;
+    trained_model.save_file(artifact_path.join("model"), &CompactRecorder::new())?;
 
     Ok(())
 }
