@@ -73,7 +73,7 @@ fn create_or_clear_directory(artifact_path: &str) -> Result<(), io::Error> {
     Ok(())
 }
 
-pub fn train<B: AutodiffBackend<InnerBackend = B>>(
+pub fn train<B: AutodiffBackend>(
     artifact_path: &str,
     training_configuration: TrainingConfig,
     device: B::Device,
@@ -83,21 +83,19 @@ pub fn train<B: AutodiffBackend<InnerBackend = B>>(
 
     B::seed(training_configuration.seed);
 
-    let batcher = MnistBatcher;
-
-    let dataloader_train = DataLoaderBuilder::<B, _, _>::new(batcher.clone())
+    let dataloader_train = DataLoaderBuilder::new(MnistBatcher)
         .batch_size(training_configuration.batch_size)
         .shuffle(training_configuration.seed)
         .num_workers(training_configuration.number_of_workers)
         .build(MnistDataset::<TrainingData>::new());
 
-    let dataloader_test = DataLoaderBuilder::<B, _, _>::new(batcher)
+    let dataloader_test = DataLoaderBuilder::new(MnistBatcher)
         .batch_size(training_configuration.batch_size)
         .shuffle(training_configuration.seed)
         .num_workers(training_configuration.number_of_workers)
         .build(MnistDataset::<TestData>::new());
 
-    let learner = LearnerBuilder::new(artifact_path)
+    let learner = LearnerBuilder::<B, _, _, _, _, _>::new(artifact_path)
         .metric_train_numeric(AccuracyMetric::new())
         .metric_valid_numeric(AccuracyMetric::new())
         .metric_train_numeric(LossMetric::new())
