@@ -1,6 +1,8 @@
 use burn_book::image_classifier::{ImageClassifierConfiguration, training::TrainingConfig};
 use mnist_dataset::DigitClass;
 
+use std::path::Path;
+
 use anyhow::Error;
 use burn::{
     backend::{Autodiff, Wgpu, wgpu::WgpuDevice},
@@ -8,17 +10,16 @@ use burn::{
 };
 
 type Backend = Wgpu<f32, i32>;
-type Device = <Backend as burn::prelude::Backend>::Device;
 
 fn main() -> Result<(), Error> {
     let device = WgpuDevice::default();
-    let artifact_path = "./artifacts/guide";
+    let artifact_path = Path::new("./artifacts/guide");
     burn_book::image_classifier::training::train::<Autodiff<Backend>>(
         artifact_path,
         TrainingConfig::new(
             ImageClassifierConfiguration::new(DigitClass::COUNT, 512),
             AdamConfig::new(),
         ),
-        device.clone(),
+        device,
     )
 }

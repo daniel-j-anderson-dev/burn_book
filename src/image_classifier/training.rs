@@ -1,21 +1,17 @@
-use crate::image_classifier::{ImageClassifier, ImageClassifierConfiguration};
+use crate::{batcher::*, image_classifier::*};
 use anyhow::Error;
-use mnist_dataset::{
-    TestData, TrainingData,
-    burn_interop::{MnistBatch, MnistBatcher, MnistDataset},
-};
 
 use std::{fs, io, path::Path};
 
 use burn::{
-    data::dataloader::DataLoaderBuilder,
+    data::{dataloader::DataLoaderBuilder, dataset::vision::MnistDataset},
     nn::loss::CrossEntropyLossConfig,
     optim::AdamConfig,
     prelude::*,
     record::CompactRecorder,
     tensor::backend::AutodiffBackend,
     train::{
-        ClassificationOutput, Learner, LearnerBuilder, TrainOutput, TrainStep, ValidStep,
+        ClassificationOutput, LearnerBuilder, TrainOutput, TrainStep, ValidStep,
         metric::{AccuracyMetric, LossMetric},
     },
 };
@@ -85,17 +81,17 @@ pub fn train<B: AutodiffBackend>(
 
     B::seed(training_configuration.seed);
 
-    let dataloader_train = DataLoaderBuilder::new(MnistBatcher::<TrainingData>::new())
+    let dataloader_train = DataLoaderBuilder::new(MnistBatcher)
         .batch_size(training_configuration.batch_size)
         .shuffle(training_configuration.seed)
         .num_workers(training_configuration.number_of_workers)
-        .build(MnistDataset::<TrainingData>::new());
+        .build(MnistDataset::train());
 
-    let dataloader_test = DataLoaderBuilder::new(MnistBatcher::<TestData>::new())
+    let dataloader_test = DataLoaderBuilder::new(MnistBatcher)
         .batch_size(training_configuration.batch_size)
         .shuffle(training_configuration.seed)
         .num_workers(training_configuration.number_of_workers)
-        .build(MnistDataset::<TestData>::new());
+        .build(MnistDataset::test());
 
     let learner = LearnerBuilder::<B, _, _, _, _, _>::new(artifact_path)
         .metric_train_numeric(AccuracyMetric::new())
