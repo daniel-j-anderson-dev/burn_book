@@ -67,19 +67,21 @@ pub struct TrainingConfig {
     pub learning_rate: f64,
 }
 
-fn create_or_clear_directory(artifact_path: &str) -> Result<(), io::Error> {
-    fs::remove_dir_all(artifact_path)?;
+fn create_or_clear_directory(artifact_path: impl AsRef<Path>) -> Result<(), io::Error> {
+    let artifact_path = artifact_path.as_ref();
+    let _ = fs::remove_dir_all(artifact_path);
     fs::create_dir_all(artifact_path)?;
     Ok(())
 }
 
 pub fn train<B: AutodiffBackend>(
-    artifact_path: &str,
+    artifact_path: impl AsRef<Path>,
     training_configuration: TrainingConfig,
     device: B::Device,
 ) -> Result<(), Error> {
+    let artifact_path = artifact_path.as_ref();
     create_or_clear_directory(artifact_path)?;
-    training_configuration.save(format!("{}/training_configuration.json", artifact_path))?;
+    training_configuration.save(artifact_path.join("training_configuration.json"))?;
 
     B::seed(training_configuration.seed);
 
@@ -112,7 +114,7 @@ pub fn train<B: AutodiffBackend>(
 
     let trained_model = learner.fit(dataloader_train, dataloader_test);
 
-    trained_model.save_file(format!("{}/model", artifact_path), &CompactRecorder::new())?;
+    trained_model.save_file(artifact_path.join("/model"), &CompactRecorder::new())?;
 
     Ok(())
 }
